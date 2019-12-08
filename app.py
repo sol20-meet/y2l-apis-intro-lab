@@ -1,5 +1,6 @@
 import json
 import requests
+import os
 from flask import Flask, render_template
 app = Flask(__name__)
 
@@ -24,9 +25,7 @@ def movies():
     return render_template('movie.html', movie=parsed_json)
 
 
-response = requests.get("https://dog.ceo/api/breeds/list/all")
 
-parsed_content = json.loads(response.content)
 
 
 
@@ -73,15 +72,9 @@ def tv_shows():
 ############################
 @app.route('/dogs')
 def dog_breeds():
-    """
-    If you visit https://dog.ceo/api/breeds/list/all 
-    a list of all dog breeds is returned. Try this in your browser! (Chrome/firefox)
-
-    Using the `requests` library (as shown in the slides)
-    Do a GET request to the link above to get all dog breeds and return them
-    to them as a list to the user as a bullet pointed list
-    """
-    return render_template('dogs.html')
+    response = requests.get("https://dog.ceo/api/breeds/list/all")
+    parsed_content = json.loads(response.content)
+    return render_template('dogs.html' , dogs = parsed_content)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host=os.getenv('IP', '0.0.0.0'), port=int(os.getenv('PORT', 4444)))
